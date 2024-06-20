@@ -12,7 +12,8 @@ from frappe.utils import (
 	flt,
 	getdate,
 )
-from erpnext.payroll.doctype.payroll_entry.payroll_entry import get_existing_salary_slips
+# from erpnext.payroll.doctype.payroll_entry.payroll_entry import get_existing_salary_slips
+from hrms.hrms.payroll.doctype.payroll_entry.payroll_entry import get_existing_salary_slips
 
 @frappe.whitelist()
 def create_salary_slips(self):

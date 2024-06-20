@@ -12,7 +12,8 @@ from datetime import timedelta
 from datetime import date as dt
 import datetime as special
 import time
-from hrms.hr.utils import get_holidays_for_employee
+# from hrms.hr.utils import get_holidays_for_employee
+from hrms.hrms.hr.utils import get_holidays_for_employee
 from frappe.utils import date_diff, add_months, today, getdate, add_days, flt, get_last_day
 import calendar
 

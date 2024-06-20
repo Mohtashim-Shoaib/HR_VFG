@@ -9,7 +9,9 @@ from frappe.utils import flt, getdate
 from frappe import _
 from frappe.model.mapper import get_mapped_doc
 from frappe.model.document import Document
-from erpnext.hr.utils import set_employee_name
+from hrms.hrms.hr.utils import set_employee_name
+# from hrms.hrms.utils import set_employee_name
+# from erpnext.hr.utils import set_employee_name
 import copy
 import json
 import datetime
@@ -30,10 +32,12 @@ from frappe.utils import (
 )
 from frappe.utils.csvutils import build_csv_response
 from six import iteritems
-
-from erpnext.manufacturing.doctype.bom.bom import get_children, validate_bom_no
-from erpnext.manufacturing.doctype.work_order.work_order import get_item_details
-from erpnext.setup.doctype.item_group.item_group import get_item_group_defaults
+from erpnext.erpnext.manufacturing.doctype.bom.bom import get_children, validate_bom_no
+from erpnext.erpnext.manufacturing.doctype.work_order.work_order import get_item_details
+from erpnext.erpnext.setup.doctype.item_group.item_group import get_item_group_defaults
+# from erpnext.manufacturing.doctype.bom.bom import get_children, validate_bom_no
+# from erpnext.manufacturing.doctype.work_order.work_order import get_item_details
+# from erpnext.setup.doctype.item_group.item_group import get_item_group_defaults
 
 class Transfer(Document):
 	pass

@@ -12,7 +12,8 @@ from frappe.utils import (
 	flt,
 	getdate,
 )
-from erpnext.payroll.doctype.payroll_entry.payroll_entry import PayrollEntry
+from hrms.hrms.payroll.doctype.payroll_entry.payroll_entry import PayrollEntry
+# from erpnext.payroll.doctype.payroll_entry.payroll_entry import PayrollEntry
 from hr_vfg.hr_ventureforce_global.custom_events import create_salary_slips_for_employees
 
 class CustomPayrollEntry(PayrollEntry):

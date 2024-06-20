@@ -11,7 +11,8 @@ from datetime import timedelta
 from datetime import date as dt
 import datetime as special
 import time
-from erpnext.hr.utils import get_holidays_for_employee
+from hrms.hrms.hr.utils import get_holiday_list_for_employee
+# from erpnext.hr.utils import get_holidays_for_employee
 from frappe.utils import cstr, flt,getdate, today
 import calendar
 
