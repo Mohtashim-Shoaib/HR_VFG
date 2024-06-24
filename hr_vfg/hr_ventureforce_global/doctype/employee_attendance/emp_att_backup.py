@@ -4,7 +4,7 @@
 
 from __future__ import unicode_literals
 import frappe
-from frappe.model.document import Document
+# from frappe.model.document import Document
 # from frappe.model.naming import make_autoname
 # from frappe import msgprint, _
 # from datetime import datetime
