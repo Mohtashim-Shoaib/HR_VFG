@@ -5,18 +5,19 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-# from frappe.model.document import Document
-# from frappe import msgprint, _
-# # from erpnext.utilities.transaction_base import TransactionBase
+from frappe.model.document import Document
+from frappe import msgprint, _
+from erpnext.utilities.transaction_base import TransactionBase
 # from erpnext.erpnext.utilities.transaction_base import TransactionBase
-# # from frappe.model.naming import make_autoname
 # from frappe.model.naming import make_autoname
-# # from frappe.utils import date_diff
+# from frappe.frappe.model.naming import make_autoname
+from frappe.model.naming import make_autoname
 # from frappe.utils import date_diff
-# from datetime import datetime
-# from datetime import timedelta
-# import datetime
-# import time
+from frappe.utils import date_diff
+from datetime import datetime
+from datetime import timedelta
+import datetime
+import time
 
 class AttendanceLogs(Document):
 # class AttendanceLogs(TransactionBase):
