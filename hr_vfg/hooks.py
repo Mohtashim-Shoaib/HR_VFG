@@ -96,11 +96,11 @@ override_doctype_class = {
 # ---------------
 # Hook on document methods and events
 
-doc_events = {
-	"Salary Slip": {
-		"validate": "hr_vfg.hr_ventureforce_global.salary_slip_override.add_leaves",
-	}
-}
+# doc_events = {
+# 	"Salary Slip": {
+# 		"validate": "hr_vfg.hr_ventureforce_global.salary_slip_override.add_leaves",
+# 	}
+# }
 
 # Scheduled Tasks
 # ---------------
