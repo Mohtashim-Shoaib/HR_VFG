@@ -87,20 +87,20 @@ app_license = "MIT"
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"Payroll Entry": "hr_vfg.hr_ventureforce_global.payroll_entry_override.CustomPayrollEntry",
-#     "Salary Slip":"hr_vfg.hr_ventureforce_global.salary_slip_override.CustomSalarySlip"
-# }
+override_doctype_class = {
+	"Payroll Entry": "hr_vfg.hr_ventureforce_global.payroll_entry_override.CustomPayrollEntry",
+    "Salary Slip":"hr_vfg.hr_ventureforce_global.salary_slip_override.CustomSalarySlip"
+}
 
 # Document Events
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"Salary Slip": {
-# 		"validate": "hr_vfg.hr_ventureforce_global.salary_slip_override.add_leaves",
-# 	}
-# }
+doc_events = {
+	"Salary Slip": {
+		"validate": "hr_vfg.hr_ventureforce_global.salary_slip_override.add_leaves",
+	}
+}
 
 # Scheduled Tasks
 # ---------------

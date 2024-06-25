@@ -4,22 +4,26 @@
 
 from __future__ import unicode_literals, absolute_import
 from frappe.model.document import Document
+from frappe import _
+from frappe import six
+from six.moves import range
+# from frappe import six
 # from six.moves import range
-# from six import string_types
-# import frappe
-# import json
-# from email.utils import formataddr
-# from frappe.utils import (get_url, get_formatted_email, cint,
-# 	validate_email_add, split_emails, time_diff_in_seconds, parse_addr)
-# from frappe.utils.file_manager import get_file
-# from frappe.email.queue import check_email_limit
-# from frappe.utils.scheduler import log
-# from frappe.email.email_body import get_message_id
-# import frappe.email.smtp
-# import time
-# from frappe import _
-# from frappe.utils.background_jobs import enqueue
-
+# from six.moves import range
+from six import string_types
+import frappe
+import json
+from email.utils import formataddr
+from frappe.utils import (get_url, get_formatted_email, cint,
+	validate_email_add, split_emails, time_diff_in_seconds, parse_addr)
+from frappe.utils.file_manager import get_file
+from frappe.email.queue import check_email_limit
+from frappe.utils.scheduler import log
+from frappe.email.email_body import get_message_id
+import frappe.email.smtp
+import time
+from frappe import _
+from frappe.utils.background_jobs import enqueue
 class AttendanceEmail(Document):
 	pass
 
