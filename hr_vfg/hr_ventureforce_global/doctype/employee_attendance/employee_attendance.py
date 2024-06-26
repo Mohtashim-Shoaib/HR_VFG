@@ -21,14 +21,16 @@ import calendar
 #     get_holidays_for_employee,
 #     InactiveEmployeeStatusError
 # )
-# from erpnext.setup.doctype.employee.employee import get_holiday_list_for_employee
-
-
+from erpnext.setup.doctype.employee.employee import get_holiday_list_for_employee
 # from erpnext.hr.doctype.employee.employee import (
 # 	InactiveEmployeeStatusError,
 # 	get_holiday_list_for_employee,
 # )
 
+# from erpnext.hr.doctype.employee.employee import (
+# 	InactiveEmployeeStatusError,
+# 	get_holiday_list_for_employee,
+# )
 
 class EmployeeAttendance(Document):
     # pass
@@ -138,10 +140,10 @@ class EmployeeAttendance(Document):
                 hrs = timedelta(hours=0, minutes=0, seconds=0)
                 s_type =None
                 day_data = None
-                if not data.check_in_1 and data.check_out_1:
-                    data.check_in_1 = hr_settings.auto_fetch_check_in
-                if not data.check_out_1 and data.check_in_1:
-                    data.check_out_1 = hr_settings.auto_fetch_check_out
+                # if not data.check_in_1 and data.check_out_1:
+                #     data.check_in_1 = hr_settings.auto_fetch_check_in
+                # if not data.check_out_1 and data.check_in_1:
+                #     data.check_out_1 = hr_settings.auto_fetch_check_out
 
                 if data.check_in_1 and data.check_out_1 and data.check_in_1 != data.check_out_1:
                     first_in_time = timedelta(hours=int(str(data.check_in_1).split(":")[0]),
