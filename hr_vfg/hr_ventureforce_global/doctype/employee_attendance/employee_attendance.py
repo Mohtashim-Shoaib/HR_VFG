@@ -12,12 +12,22 @@ from datetime import timedelta
 from datetime import date as dt
 import datetime as special
 import time
+# from frappe.frappe.utils import cstr, flt, getdate, today, get_time
 from frappe.utils import cstr, flt,getdate, today, get_time
 import calendar
-from erpnext.hr.doctype.employee.employee import (
-	InactiveEmployeeStatusError,
-	get_holiday_list_for_employee,
-)
+
+
+# from erpnext.setup.doctype.employee.employee import (
+#     get_holidays_for_employee,
+#     InactiveEmployeeStatusError
+# )
+from erpnext.setup.doctype.employee.employee import get_holiday_list_for_employee
+
+
+# from erpnext.hr.doctype.employee.employee import (
+# 	InactiveEmployeeStatusError,
+# 	get_holiday_list_for_employee,
+# )
 
 
 class EmployeeAttendance(Document):

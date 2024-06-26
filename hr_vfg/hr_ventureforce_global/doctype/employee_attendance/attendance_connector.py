@@ -2,13 +2,13 @@ from __future__ import unicode_literals
 import frappe
 from frappe import utils
 from frappe import throw, _
-
 import sys
 import time
-# from zk import ZK, const
+from zk import ZK, const
 from datetime import datetime, timedelta
 from frappe.utils import date_diff, add_months, get_datetime, today, getdate, add_days, flt, get_last_day
 import calendar
+# from frappe.utils.background_jobs import enqueue
 from frappe.utils.background_jobs import enqueue
 from requests import request
 import json
@@ -44,7 +44,7 @@ def get_checkins(args=None, ip=None, port=None,password=0):
 	if not password:
 		password = 0
 	zk = ZK(ip, port=int(port), timeout=1500, password=password, force_udp=False, ommit_ping=False)
-	frappe.log_error("Starting..","Attendance hook test")
+	frappe.log_error("Starting in..","Attendance hook test")
 	try:
 		conn = zk.connect()
 		if conn:
@@ -164,6 +164,7 @@ def get_checkouts(args=None,ip=None, port=None,password=0):
 	if not password:
 		password = 0
 	zk = ZK(ip, port=int(port), timeout=1500, password=password, force_udp=False, ommit_ping=False)
+	frappe.log_error("Starting out..","Attendance hook test")
 	try:
 		conn = zk.connect()
 		if conn:
@@ -330,6 +331,7 @@ def get_checkins_checkouts(args=None,ip=None, port=None,password=0):
 	if not password:
 		password = 0
 	zk = ZK(ip, port=int(port), timeout=1500, password=password, force_udp=False, ommit_ping=False)
+	frappe.log_error("Starting in/out..","Attendance hook test")
 	try:
 		conn = zk.connect()
 		if conn:
@@ -377,6 +379,7 @@ def get_checkins_checkouts(args=None,ip=None, port=None,password=0):
 					if attendance_dict.get(str(attend1).split()[1]):
 						if attendance_dict.get(str(attend1).split()[1]).get(str(attend1).split()[3]):
 							t_biometric = str(attend1).split()[1]
+							flg = False
 							t_date = str(attend1).split()[3]
 							employee = frappe.db.get_value("Employee",{"biometric_id":t_biometric},"name")
 							shift_ass = frappe.get_all("Shift Assignment", filters={'employee': employee,
@@ -593,5 +596,3 @@ def email_report():
 		})
 		auto_email_report.save()
 		send_now("Daily Attendance")
-
-	

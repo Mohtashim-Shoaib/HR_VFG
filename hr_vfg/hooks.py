@@ -96,16 +96,26 @@ override_doctype_class = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"Salary Slip": {
-# 		"validate": "hr_vfg.hr_ventureforce_global.salary_slip_override.add_leaves",
-# 	}
-# }
+doc_events = {
+	"Salary Slip": {
+		"validate": "hr_vfg.hr_ventureforce_global.salary_slip_override.add_leaves",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
+    "cron": {
+		"0 04 * * *": [
+			"hr_vfg.hr_ventureforce_global.doctype.employee_attendance.attendance_connector.get_attendance_from_hook"
+		]
+	},
+    "cron": {
+		"0 11 * * *": [
+			"hr_vfg.hr_ventureforce_global.doctype.employee_attendance.attendance_connector.get_attendance_from_hook"
+		]
+	},
 #	"all": [
 #		"hr_vfg.tasks.all"
 #	],
@@ -121,7 +131,7 @@ override_doctype_class = {
 #	"monthly": [
 #		"hr_vfg.tasks.monthly"
 #	]
-# }
+}
 
 # Testing
 # -------
@@ -131,9 +141,9 @@ override_doctype_class = {
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"erpnext.payroll.doctype.payroll_entry.payroll_entry.create_salary_slips": "hr_vfg.hr_ventureforce_global.custom_events.create_salary_slips"
-# }
+override_whitelisted_methods = {
+	"erpnext.payroll.doctype.payroll_entry.payroll_entry.create_salary_slips": "hr_vfg.hr_ventureforce_global.custom_events.create_salary_slips"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
@@ -150,26 +160,26 @@ override_doctype_class = {
 # User Data Protection
 # --------------------
 
-# user_data_fields = [
-# 	{
-# 		"doctype": "{doctype_1}",
-# 		"filter_by": "{filter_by}",
-# 		"redact_fields": ["{field_1}", "{field_2}"],
-# 		"partial": 1,
-# 	},
-# 	{
-# 		"doctype": "{doctype_2}",
-# 		"filter_by": "{filter_by}",
-# 		"partial": 1,
-# 	},
-# 	{
-# 		"doctype": "{doctype_3}",
-# 		"strict": False,
-# 	},
-# 	{
-# 		"doctype": "{doctype_4}"
-# 	}
-# ]
+user_data_fields = [
+	{
+		"doctype": "{doctype_1}",
+		"filter_by": "{filter_by}",
+		"redact_fields": ["{field_1}", "{field_2}"],
+		"partial": 1,
+	},
+	{
+		"doctype": "{doctype_2}",
+		"filter_by": "{filter_by}",
+		"partial": 1,
+	},
+	{
+		"doctype": "{doctype_3}",
+		"strict": False,
+	},
+	{
+		"doctype": "{doctype_4}"
+	}
+]
 
 # Authentication and authorization
 # --------------------------------
