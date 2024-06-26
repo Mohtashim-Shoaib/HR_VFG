@@ -116,15 +116,15 @@ scheduler_events = {
 			"hr_vfg.hr_ventureforce_global.doctype.employee_attendance.attendance_connector.get_attendance_from_hook"
 		]
 	},
-#	"all": [
-#		"hr_vfg.tasks.all"
-#	],
-#	"daily": [
-#		"hr_vfg.tasks.daily"
-#	],
-#	"hourly": [
-#		"hr_vfg.tasks.hourly"
-#	],
+	# "all": [
+	# 	"hr_vfg.hr_ventureforce_global.doctype.employee_attendance.attendance_connector.get_attendance_from_hook"
+	# ],
+	# "daily": [
+	# 	"hr_vfg.hr_ventureforce_global.doctype.employee_attendance.attendance_connector.get_attendance_from_hook"
+	# ],
+	# "hourly": [
+	# 	"hr_vfg.hr_ventureforce_global.doctype.employee_attendance.attendance_connector.get_attendance_from_hook"
+	# ],
 #	"weekly": [
 #		"hr_vfg.tasks.weekly"
 #	]

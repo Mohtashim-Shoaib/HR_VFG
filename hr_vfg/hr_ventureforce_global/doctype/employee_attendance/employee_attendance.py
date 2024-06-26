@@ -21,7 +21,7 @@ import calendar
 #     get_holidays_for_employee,
 #     InactiveEmployeeStatusError
 # )
-from erpnext.setup.doctype.employee.employee import get_holiday_list_for_employee
+# from erpnext.setup.doctype.employee.employee import get_holiday_list_for_employee
 
 
 # from erpnext.hr.doctype.employee.employee import (
