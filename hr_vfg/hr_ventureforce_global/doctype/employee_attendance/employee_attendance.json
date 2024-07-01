@@ -29,10 +29,12 @@
   "total_half_days",
   "early_for_halfday",
   "no_of_nights",
+  "no_of_holiday_night",
   "column_break_13",
   "no_of_sundays",
   "total_early_goings",
   "total_working_hours",
+  "total_weekly_off",
   "column_break_25",
   "month_days",
   "lates_for_absent",
@@ -58,8 +60,10 @@
   "deduction_hours",
   "column_break_18",
   "total_early_going_hours",
+  "total_extra_duty_for_halfday",
   "column_break_52",
   "late_plus_early_hours_",
+  "total_extra_duty_for_fullday",
   "column_break_54",
   "late_early_adjustment"
  ],
@@ -287,12 +291,12 @@
   },
   {
    "fieldname": "holiday_halfday_ot",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "Holiday Halfday Over Time"
   },
   {
    "fieldname": "holiday_full_day_ot",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "label": "Holiday Full Day Over Time"
   },
   {
@@ -370,10 +374,30 @@
    "fieldname": "early_for_absents",
    "fieldtype": "Float",
    "label": "Early for Absents"
+  },
+  {
+   "fieldname": "total_weekly_off",
+   "fieldtype": "Float",
+   "label": "Total Weekly Off"
+  },
+  {
+   "fieldname": "no_of_holiday_night",
+   "fieldtype": "Data",
+   "label": "No of Holiday Night"
+  },
+  {
+   "fieldname": "total_extra_duty_for_halfday",
+   "fieldtype": "Float",
+   "label": "Total Extra Duty for Halfday"
+  },
+  {
+   "fieldname": "total_extra_duty_for_fullday",
+   "fieldtype": "Float",
+   "label": "Total Extra Duty for Fullday"
   }
  ],
  "links": [],
- "modified": "2023-06-26 16:55:14.482060",
+ "modified": "2024-07-01 14:18:21.291585",
  "modified_by": "Administrator",
  "module": "HR VentureForce Global",
  "name": "Employee Attendance",
@@ -396,6 +420,7 @@
  "search_fields": "employee_name",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "title_field": "employee_name",
  "track_changes": 1
 }

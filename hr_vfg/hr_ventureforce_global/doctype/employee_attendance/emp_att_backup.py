@@ -15,7 +15,6 @@ from frappe.utils import cstr, flt
 
 
 class EmployeeAttendance(Document):
-    # pass
     def autoname(self):
         self.name = make_autoname(self.employee + '-' + self.month)
 
@@ -414,4 +413,5 @@ class EmployeeAttendance(Document):
         else:
             #self.over_time = 0
             self.short_hours = self.difference
-            self.total_working_hours = required_working_hrs
+
+        self.total_working_hours = required_working_hrs

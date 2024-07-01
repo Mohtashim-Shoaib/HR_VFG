@@ -3,7 +3,7 @@
  "category": "Modules",
  "charts": [],
  "creation": "2023-04-02 21:42:01.962189",
- "developer_mode_only": 0,
+ "developer_mode_only": 1,
  "disable_user_customization": 0,
  "docstatus": 0,
  "doctype": "Workspace",
