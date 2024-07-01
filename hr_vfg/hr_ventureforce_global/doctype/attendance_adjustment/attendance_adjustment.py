@@ -8,7 +8,6 @@ import time
 from datetime import datetime, timedelta
 from frappe.utils import date_diff, add_months, today, getdate, add_days, flt, get_last_day
 import calendar
-
 from frappe.utils.background_jobs import enqueue
 from requests import request
 import json
@@ -24,7 +23,7 @@ class AttendanceAdjustment(Document):
 		if self.type != "Short Leave":
 			return True
 		for data in self.table_4:
-			att = frappe.db.sql(""" select p.name, c.check_in_1, c.check_out_1 from `tabEmployee Attendance` p 
+			att = frappe.db.sql(""" select p.name, c.check_in_1, c.check_out_1 from `tabEmployee Attendance` 
 			JOIN `tabEmployee Attendance Table` c
 					ON c.parent = p.name where c.date=%s and p.month=%s and p.employee=%s""",
 					(self.date,self.month,data.employee_id), as_dict=1)

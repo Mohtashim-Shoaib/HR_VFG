@@ -226,7 +226,7 @@ def get_checkouts(args=None,ip=None, port=None,password=0):
 				for bid in B_r:
 					biometric_list.append(bid.biometric_id)
 				frappe.db.sql(""" delete from `tabAttendance Logs` where attendance_date >= %s and attendance_date <= %s and ip=%s {0} """.format(condition2), (args.get("from_date"),args.get("to_date"),ip+":"+port))
-				frappe.db.sql(""" update `tabEmployee Attendance Table` set check_out_1=NULL, late_sitting=NULL, night_switch=0 where date >= %s and date <= %s and ip=%s and type!="Adjustment"{0} """.format(condition1), (args.get("from_date"),args.get("to_date"),ip+":"+port))
+				# frappe.db.sql(""" update `tabEmployee Attendance Table` set check_out_1=NULL, late_sitting=NULL, night_switch=0 where date >= %s and date <= %s and ip=%s and type!="Adjustment"{0} """.format(condition1), (args.get("from_date"),args.get("to_date"),ip+":"+port))
 				frappe.db.commit()
 				for attend1 in attendance:
 					if getdate(str(attend1).split()[3]) < getdate(args.get("from_date")) or getdate(str(attend1).split()[3]) > getdate(args.get("to_date")):
@@ -393,7 +393,7 @@ def get_checkins_checkouts(args=None,ip=None, port=None,password=0):
 				for bid in B_r:
 					biometric_list.append(bid.biometric_id)
 				frappe.db.sql(""" delete from `tabAttendance Logs` where attendance_date >= %s and attendance_date <= %s and ip=%s {0} """.format(condition2), (args.get("from_date"),args.get("to_date"),ip+":"+port))
-				frappe.db.sql(""" update `tabEmployee Attendance Table` set check_in_1 = NULL, check_out_1=NULL, late_sitting=NULL, night_switch=0 where date >= %s and date <= %s and ip=%s and type!="Adjustment"{0} """.format(condition1), (args.get("from_date"),args.get("to_date"),ip+":"+port))
+				# frappe.db.sql(""" update `tabEmployee Attendance Table` set check_in_1 = NULL, check_out_1=NULL, late_sitting=NULL, night_switch=0 where date >= %s and date <= %s and ip=%s and type!="Adjustment"{0} """.format(condition1), (args.get("from_date"),args.get("to_date"),ip+":"+port))
 				frappe.db.commit()
 				for attend1 in attendance:
 					if getdate(str(attend1).split()[3]) < getdate(args.get("from_date")) or getdate(str(attend1).split()[3]) > getdate(args.get("to_date")):
@@ -435,10 +435,8 @@ def get_checkins_checkouts(args=None,ip=None, port=None,password=0):
 											}
 									else:
 										flg = True
-
-							else: 
+							else:
 								flg = True
-							
 							if flg:
 								attendance_dict.get(str(attend1).split()[1]).get(str(attend1).split()[3])["check out"]=str(attend1).split()[4]
 								attendance_dict.get(str(attend1).split()[1]).get(str(attend1).split()[3])["checkout string"]=str(attend1)
@@ -621,5 +619,3 @@ def email_report():
 		})
 		auto_email_report.save()
 		send_now("Daily Attendance")
-
-	

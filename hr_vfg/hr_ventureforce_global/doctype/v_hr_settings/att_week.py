@@ -287,7 +287,7 @@ def get_attendance_in_test2(args):
 				for bid in B_r:
 					biometric_list.append(bid.biometric_id)
 				frappe.db.sql(""" delete from `tabAttendance Logs` where attendance_date >= %s and attendance_date <= %s and ip="115.167.64.233:4370"{0} """.format(condition2), (args.get("from_date"),args.get("to_date")))
-				frappe.db.sql(""" update `tabEmployee Attendance Table` set check_in_1=NULL, check_out_1=NULL, late_sitting=NULL, night_switch=0 where date >= %s and date <= %s and ip="115.167.64.233:4370"{0} """.format(condition1), (args.get("from_date"),args.get("to_date")))
+				# frappe.db.sql(""" update `tabEmployee Attendance Table` set check_in_1=NULL, check_out_1=NULL, late_sitting=NULL, night_switch=0 where date >= %s and date <= %s and ip="115.167.64.233:4370"{0} """.format(condition1), (args.get("from_date"),args.get("to_date")))
 				frappe.db.commit()
 				for attend1 in attendance:
 					if getdate(str(attend1).split()[3]) < getdate(args.get("from_date")) or getdate(str(attend1).split()[3]) > getdate(args.get("to_date")):
@@ -431,77 +431,77 @@ def get_attendance_in_test2(args):
 
 
 
-def settle_night_shift():
-	EL  = frappe.get_all("Employee Attendance",filters={},fields=["name"])
-	for data in EL:
-		try:
-			doc = frappe.get_doc("Employee Attendance",data.name)
-			#frappe.log_error(len(doc.table1),"Night shift doc")
-			for item in range(len(doc.table1)):
-					try:
-						if doc.table1[item].night_switch == 1:
-							continue
-						shift_req = frappe.get_all("Shift Request", filters={'employee': doc.employee,
-																		'from_date': ["<=", doc.table1[item].date], 'to_date': [">=", doc.table1[item].date]}, fields=["*"])
-						shift = None
-						if len(shift_req) > 0:
-							shift = shift_req[0].shift_type
-						else:
-							shift_ass = frappe.get_all("Shift Assignment", filters={'employee': doc.employee,
-																					'date': ["<=", doc.table1[item].date]}, fields=["*"])
-							if len(shift_ass) > 0:
-								shift = shift_ass[0].shift_type
-						shift_doc = frappe.get_doc("Shift Type", shift)
+# def settle_night_shift():
+# 	EL  = frappe.get_all("Employee Attendance",filters={},fields=["name"])
+# 	for data in EL:
+# 		try:
+# 			doc = frappe.get_doc("Employee Attendance",data.name)
+# 			#frappe.log_error(len(doc.table1),"Night shift doc")
+# 			for item in range(len(doc.table1)):
+# 					try:
+# 						if doc.table1[item].night_switch == 1:
+# 							continue
+# 						shift_req = frappe.get_all("Shift Request", filters={'employee': doc.employee,
+# 																		'from_date': ["<=", doc.table1[item].date], 'to_date': [">=", doc.table1[item].date]}, fields=["*"])
+# 						shift = None
+# 						if len(shift_req) > 0:
+# 							shift = shift_req[0].shift_type
+# 						else:
+# 							shift_ass = frappe.get_all("Shift Assignment", filters={'employee': doc.employee,
+# 																					'date': ["<=", doc.table1[item].date]}, fields=["*"])
+# 							if len(shift_ass) > 0:
+# 								shift = shift_ass[0].shift_type
+# 						shift_doc = frappe.get_doc("Shift Type", shift)
 						
-						if shift_doc.shift_type == "Night" and item == 1:
-							if doc.table1[item].check_in_1 and  doc.table1[item].check_out_1:
-								y = datetime.strptime(
-                        					str(doc.table1[item].check_in_1), '%H:%M:%S').time()
+						# if shift_doc.shift_type == "Night" and item == 1:
+						# 	if doc.table1[item].check_in_1 and  doc.table1[item].check_out_1:
+						# 		y = datetime.strptime(
+                        # 					str(doc.table1[item].check_in_1), '%H:%M:%S').time()
 	
-								ho,mo,so = str(y).split(':')
-								if timedelta(hours=float(ho), minutes=float(mo), seconds=float(so)) < timedelta(hours=18, minutes=0, seconds=0):
-									doc.table1[item -1].check_out_1 =doc.table1[item].check_in_1
-								doc.table1[item-1].night_switch = 1
-							elif doc.table1[item].check_in_1 and not doc.table1[item].check_out_1:
-								y = datetime.strptime(
-                        					str(doc.table1[item].check_in_1), '%H:%M:%S').time()
+						# 		ho,mo,so = str(y).split(':')
+						# 		if timedelta(hours=float(ho), minutes=float(mo), seconds=float(so)) < timedelta(hours=18, minutes=0, seconds=0):
+						# 			doc.table1[item -1].check_out_1 =doc.table1[item].check_in_1
+						# 		doc.table1[item-1].night_switch = 1
+						# 	elif doc.table1[item].check_in_1 and not doc.table1[item].check_out_1:
+						# 		y = datetime.strptime(
+                        # 					str(doc.table1[item].check_in_1), '%H:%M:%S').time()
 	
-								ho,mo,so = str(y).split(':')
-								if timedelta(hours=float(ho), minutes=float(mo), seconds=float(so)) > timedelta(hours=18, minutes=0, seconds=0):
-									doc.table1[item].check_out_1 =doc.table1[item].check_in_1
-								else:
-									doc.table1[item -1].check_out_1 =doc.table1[item].check_in_1
-								doc.table1[item-1].night_switch = 1
+						# 		ho,mo,so = str(y).split(':')
+						# 		if timedelta(hours=float(ho), minutes=float(mo), seconds=float(so)) > timedelta(hours=18, minutes=0, seconds=0):
+						# 			doc.table1[item].check_out_1 =doc.table1[item].check_in_1
+						# 		else:
+						# 			doc.table1[item -1].check_out_1 =doc.table1[item].check_in_1
+						# 		doc.table1[item-1].night_switch = 1
 							
-						if shift_doc.shift_type == "Night" and item > 1:
-							doc.table1[item -1].check_in_1 =doc.table1[item-1].check_out_1
-							doc.table1[item -1].check_out_1 =None
-							if doc.table1[item].check_in_1 and  doc.table1[item].check_out_1:
-								y = datetime.strptime(
-                        					str(doc.table1[item].check_in_1), '%H:%M:%S').time()
+		# 				if shift_doc.shift_type == "Night" and item > 1:
+		# 					doc.table1[item -1].check_in_1 =doc.table1[item-1].check_out_1
+		# 					doc.table1[item -1].check_out_1 =None
+		# 					if doc.table1[item].check_in_1 and  doc.table1[item].check_out_1:
+		# 						y = datetime.strptime(
+        #                 					str(doc.table1[item].check_in_1), '%H:%M:%S').time()
 	
-								ho,mo,so = str(y).split(':')
-								if timedelta(hours=float(ho), minutes=float(mo), seconds=float(so)) < timedelta(hours=18, minutes=0, seconds=0):
-									doc.table1[item -1].check_out_1 =doc.table1[item].check_in_1
-								doc.table1[item-1].night_switch = 1
+		# 						ho,mo,so = str(y).split(':')
+		# 						if timedelta(hours=float(ho), minutes=float(mo), seconds=float(so)) < timedelta(hours=18, minutes=0, seconds=0):
+		# 							doc.table1[item -1].check_out_1 =doc.table1[item].check_in_1
+		# 						doc.table1[item-1].night_switch = 1
 								
-							elif doc.table1[item].check_in_1 and not doc.table1[item].check_out_1:
-									y = datetime.strptime(
-												str(doc.table1[item].check_in_1), '%H:%M:%S').time()
+		# 					elif doc.table1[item].check_in_1 and not doc.table1[item].check_out_1:
+		# 							y = datetime.strptime(
+		# 										str(doc.table1[item].check_in_1), '%H:%M:%S').time()
 		
-									ho,mo,so = str(y).split(':')
-									if timedelta(hours=float(ho), minutes=float(mo), seconds=float(so)) > timedelta(hours=18, minutes=0, seconds=0):
-										doc.table1[item].check_out_1 =doc.table1[item].check_in_1
-									else:
-										doc.table1[item -1].check_out_1 =doc.table1[item].check_in_1
-									doc.table1[item-1].night_switch = 1
-						if not doc.table1[item -1].check_in_1 and not doc.table1[item -1].check_out_1:
-							doc.table1[item-1].night_switch = 0
-					except:
-						frappe.log_error(frappe.get_traceback(),"Night shift settle")
-			doc.save()
-		except:
-			frappe.log_error(frappe.get_traceback(),"Night shift")
+		# 							ho,mo,so = str(y).split(':')
+		# 							if timedelta(hours=float(ho), minutes=float(mo), seconds=float(so)) > timedelta(hours=18, minutes=0, seconds=0):
+		# 								doc.table1[item].check_out_1 =doc.table1[item].check_in_1
+		# 							else:
+		# 								doc.table1[item -1].check_out_1 =doc.table1[item].check_in_1
+		# 							doc.table1[item-1].night_switch = 1
+		# 				if not doc.table1[item -1].check_in_1 and not doc.table1[item -1].check_out_1:
+		# 					doc.table1[item-1].night_switch = 0
+		# 			except:
+		# 				frappe.log_error(frappe.get_traceback(),"Night shift settle")
+		# 	doc.save()
+		# except:
+		# 	frappe.log_error(frappe.get_traceback(),"Night shift")
 
 def get_attendance_in_test3(args):
 	conn = None
@@ -543,7 +543,7 @@ def get_attendance_in_test3(args):
 				for bid in B_r:
 					biometric_list.append(bid.biometric_id)
 				frappe.db.sql(""" delete from `tabAttendance Logs` where attendance_date >= %s and attendance_date <= %s and ip="115.167.64.233:4370"{0} """.format(condition2), (args.get("from_date"),args.get("to_date")))
-				frappe.db.sql(""" update `tabEmployee Attendance Table` set check_in_1=NULL, check_out_1=NULL, late_sitting=NULL, night_switch=0 where date >= %s and date <= %s and ip="115.167.64.233:4370"{0} """.format(condition1), (args.get("from_date"),args.get("to_date")))
+				# frappe.db.sql(""" update `tabEmployee Attendance Table` set check_in_1=NULL, check_out_1=NULL, late_sitting=NULL, night_switch=0 where date >= %s and date <= %s and ip="115.167.64.233:4370"{0} """.format(condition1), (args.get("from_date"),args.get("to_date")))
 				frappe.db.commit()
 				for attend1 in attendance:
 					if getdate(str(attend1).split()[3]) < getdate(args.get("from_date")) or getdate(str(attend1).split()[3]) > getdate(args.get("to_date")):
@@ -728,7 +728,7 @@ def get_attendance_in_test4(args):
 				for bid in B_r:
 					biometric_list.append(bid.biometric_id)
 				frappe.db.sql(""" delete from `tabAttendance Logs` where attendance_date >= %s and attendance_date <= %s and ip="103.53.44.158:4380"{0} """.format(condition2), (args.get("from_date"),args.get("to_date")))
-				frappe.db.sql(""" update `tabEmployee Attendance Table` set check_in_1=NULL, check_out_1=NULL, late_sitting=NULL, night_switch=0 where date >= %s and date <= %s and ip="103.53.44.158:4380"{0} """.format(condition1), (args.get("from_date"),args.get("to_date")))
+				# frappe.db.sql(""" update `tabEmployee Attendance Table` set check_in_1=NULL, check_out_1=NULL, late_sitting=NULL, night_switch=0 where date >= %s and date <= %s and ip="103.53.44.158:4380"{0} """.format(condition1), (args.get("from_date"),args.get("to_date")))
 				frappe.db.commit()
 				for attend1 in attendance:
 					if getdate(str(attend1).split()[3]) < getdate(args.get("from_date")) or getdate(str(attend1).split()[3]) > getdate(args.get("to_date")):

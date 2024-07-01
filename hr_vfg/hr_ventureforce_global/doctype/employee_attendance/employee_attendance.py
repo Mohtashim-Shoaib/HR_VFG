@@ -18,10 +18,6 @@ from erpnext.setup.doctype.employee.employee import (
 	InactiveEmployeeStatusError,
 	get_holiday_list_for_employee,
 )
-# from hrms.hr.doctype.employee.employee import (
-# 	InactiveEmployeeStatusError,
-# 	get_holiday_list_for_employee,
-# )
 
 
 class EmployeeAttendance(Document):
@@ -152,260 +148,260 @@ class EmployeeAttendance(Document):
                 hrs = timedelta(hours=0, minutes=0, seconds=0)
                 s_type =None
                 day_data = None
-                if not data.check_in_1 and data.check_out_1:
-                    data.check_in_1 = hr_settings.auto_fetch_check_in
-                if not data.check_out_1 and data.check_in_1:
-                    data.check_out_1 = hr_settings.auto_fetch_check_out
+                # if not data.check_in_1 and data.check_out_1:
+                #     data.check_in_1 = hr_settings.auto_fetch_check_in
+                # if not data.check_out_1 and data.check_in_1:
+                #     data.check_out_1 = hr_settings.auto_fetch_check_out
 
-                if str(data.check_in_1) == str(hr_settings.auto_fetch_check_in):
-                    data.check_in_1 = None
-                if str(data.check_out_1) == str(hr_settings.auto_fetch_check_out):
-                    data.check_out_1 = None
+                # if str(data.check_in_1) == str(hr_settings.auto_fetch_check_in):
+                #     data.check_in_1 = None
+                # if str(data.check_out_1) == str(hr_settings.auto_fetch_check_out):
+                #     data.check_out_1 = None
                 
                 # if data.check_in_1 != None and data.check_out_1 == None and data.date < today():
                 #     data.check_out_1 = timedelta(hours=int(str(data.check_in_1).split(":")[0]),
                 #                               minutes=int(str(data.check_in_1).split(":")[1])+1)
                   
-                if data.approved_ot1:
-                    total_approved_ot+= timedelta(hours=int(str(data.approved_ot1).split(":")[0]),minutes=int(str(data.approved_ot1).split(":")[1]))
-                if data.check_in_1 and data.check_out_1 and data.check_in_1 != data.check_out_1:
-                    first_in_time = timedelta(hours=int(str(data.check_in_1).split(":")[0]),
-                                              minutes=int(str(data.check_in_1).split(":")[1]))
-                    first_out_time = timedelta(hours=int(str(data.check_out_1).split(":")[0]),
-                                              minutes=int(str(data.check_out_1).split(":")[1]))
+                # if data.approved_ot1:
+                #     total_approved_ot+= timedelta(hours=int(str(data.approved_ot1).split(":")[0]),minutes=int(str(data.approved_ot1).split(":")[1]))
+                # if data.check_in_1 and data.check_out_1 and data.check_in_1 != data.check_out_1:
+                #     first_in_time = timedelta(hours=int(str(data.check_in_1).split(":")[0]),
+                #                               minutes=int(str(data.check_in_1).split(":")[1]))
+                #     first_out_time = timedelta(hours=int(str(data.check_out_1).split(":")[0]),
+                #                               minutes=int(str(data.check_out_1).split(":")[1]))
                    
-                    diff = str(first_out_time - first_in_time)
-                    if "day" in diff:
-                        diff = diff.split("day, ")[1].split(":")
-                        diff = timedelta(hours=float(diff[0]), minutes=float(
-                            diff[1]), seconds=float(diff[2]))
-                    else:
-                        diff = first_out_time - first_in_time
-                    total_time = total_time + diff if total_time else diff
+                #     diff = str(first_out_time - first_in_time)
+                #     if "day" in diff:
+                #         diff = diff.split("day, ")[1].split(":")
+                #         diff = timedelta(hours=float(diff[0]), minutes=float(
+                #             diff[1]), seconds=float(diff[2]))
+                #     else:
+                #         diff = first_out_time - first_in_time
+                #     total_time = total_time + diff if total_time else diff
                    
-                if data.check_in_1 and data.check_in_1 != data.check_out_1:
-                    shift = None
-                    shift_ass = frappe.get_all("Shift Assignment", filters={'employee': self.employee,
-                                                                            'start_date': ["<=", getdate(data.date)],'end_date': [">=", getdate(data.date)]}, fields=["*"])
-                    if len(shift_ass) > 0:
-                        shift = shift_ass[0].shift_type
-                    else:
-                        shift_ass = frappe.get_all("Shift Assignment", filters={'employee': self.employee,
-                                                                            'start_date': ["<=", getdate(data.date)]}, fields=["*"])
-                    if len(shift_ass) > 0:
-                        shift = shift_ass[0].shift_type
-                    if shift == None:
-                        frappe.throw(_("No shift available for this employee"))
-                    data.shift = shift
-                    shift_doc = frappe.get_doc("Shift Type", shift)
-                    s_type = shift_doc.shift_type
-                    data.absent = 0
+                # if data.check_in_1 and data.check_in_1 != data.check_out_1:
+                #     shift = None
+                #     shift_ass = frappe.get_all("Shift Assignment", filters={'employee': self.employee,
+                #                                                             'start_date': ["<=", getdate(data.date)],'end_date': [">=", getdate(data.date)]}, fields=["*"])
+                #     if len(shift_ass) > 0:
+                #         shift = shift_ass[0].shift_type
+                #     else:
+                #         shift_ass = frappe.get_all("Shift Assignment", filters={'employee': self.employee,
+                #                                                             'start_date': ["<=", getdate(data.date)]}, fields=["*"])
+                #     if len(shift_ass) > 0:
+                #         shift = shift_ass[0].shift_type
+                #     if shift == None:
+                #         frappe.throw(_("No shift available for this employee"))
+                #     data.shift = shift
+                #     shift_doc = frappe.get_doc("Shift Type", shift)
+                #     s_type = shift_doc.shift_type
+                #     data.absent = 0
                    
-                    day_name = datetime.strptime(
-                        str(data.date), '%Y-%m-%d').strftime('%A')
+                #     day_name = datetime.strptime(
+                #         str(data.date), '%Y-%m-%d').strftime('%A')
 
-                    in_diff = first_in_time - shift_doc.start_time
+                #     in_diff = first_in_time - shift_doc.start_time
                    
-                    day_data = None
-                    for day in shift_doc.day:
-                        if day_name == day.day:
-                            day_data = day
-                            break
+                #     day_data = None
+                #     for day in shift_doc.day:
+                #         if day_name == day.day:
+                #             day_data = day
+                #             break
 
-                    if data.weekly_off == 1 or data.public_holiday == 1:
-                        #settings required
-                        if total_time:
-                            total_holiday_hours += total_time
+                #     if data.weekly_off == 1 or data.public_holiday == 1:
+                #         #settings required
+                #         if total_time:
+                #             total_holiday_hours += total_time
                             
-                    if not day_data:
-                        data.difference = total_time
-                        check_sanwich_after_holiday(self,previous,data,hr_settings,index)
-                        previous = data
-                        index+=1
-                        if data.absent == 0 and data.check_in_1:
-                            if holiday_flag:
-                                if hr_settings.count_working_on_holiday_in_present_days == 1:
-                                    present_days+=1
-                                if total_time:
-                                    if total_time >= timedelta(hours=hr_settings.holiday_halfday_ot,minutes=00,seconds=0) and \
-                                        total_time < timedelta(hours=hr_settings.holiday_full_day_ot,minutes=00,seconds=0):
-                                        holiday_halfday_ot = holiday_halfday_ot + 1
-                                    elif total_time >= timedelta(hours=hr_settings.holiday_full_day_ot,minutes=00,seconds=0):
-                                        holiday_full_day_ot = holiday_full_day_ot + 1
-                                    if total_time >= timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0):
-                                        data.late_sitting = timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0) + timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0)
-                                        total_late_hr_worked += data.late_sitting
-                                        #total_holiday_hours += total_time
-                                    if (total_time) >= timedelta(hours=hr_settings.threshold_for_additional_hours,minutes=0,seconds=0):
-                                            data.additional_hours  =  (total_time) - timedelta(hours=hr_settings.threshold_for_additional_hours,minutes=0,seconds=0)
-                                            total_additional_hours = total_additional_hours + data.additional_hours
-                                    if data.late_sitting == None:
-                                        data.late_sitting = total_time
-                                        total_late_hr_worked += data.late_sitting
-                            else:
-                                present_days+=1
+                #     if not day_data:
+                #         data.difference = total_time
+                #         check_sanwich_after_holiday(self,previous,data,hr_settings,index)
+                #         previous = data
+                #         index+=1
+                #         if data.absent == 0 and data.check_in_1:
+                #             if holiday_flag:
+                #                 if hr_settings.count_working_on_holiday_in_present_days == 1:
+                #                     present_days+=1
+                #                 if total_time:
+                #                     if total_time >= timedelta(hours=hr_settings.holiday_halfday_ot,minutes=00,seconds=0) and \
+                #                         total_time < timedelta(hours=hr_settings.holiday_full_day_ot,minutes=00,seconds=0):
+                #                         holiday_halfday_ot = holiday_halfday_ot + 1
+                #                     elif total_time >= timedelta(hours=hr_settings.holiday_full_day_ot,minutes=00,seconds=0):
+                #                         holiday_full_day_ot = holiday_full_day_ot + 1
+                #                     if total_time >= timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0):
+                #                         data.late_sitting = timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0) + timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0)
+                #                         total_late_hr_worked += data.late_sitting
+                #                         #total_holiday_hours += total_time
+                #                     if (total_time) >= timedelta(hours=hr_settings.threshold_for_additional_hours,minutes=0,seconds=0):
+                #                             data.additional_hours  =  (total_time) - timedelta(hours=hr_settings.threshold_for_additional_hours,minutes=0,seconds=0)
+                #                             total_additional_hours = total_additional_hours + data.additional_hours
+                #                     if data.late_sitting == None:
+                #                         data.late_sitting = total_time
+                #                         total_late_hr_worked += data.late_sitting
+                #             else:
+                #                 present_days+=1
                         
-                        continue
+                #         continue
                     
-                    if day_data.end_time > first_out_time:
-                        per_day_h = first_out_time - first_in_time
-                    else:
-                        per_day_h = day_data.end_time - first_in_time
-                    data.per_day_hour = per_day_h
-                    if "day" in str(per_day_h):
-                        per_day_h = str(per_day_h).split("day, ")[1].split(":")
-                        per_day_h = timedelta(hours=float(per_day_h[0]), minutes=float(
-                            per_day_h[1]), seconds=float(per_day_h[2]))
+                #     if day_data.end_time > first_out_time:
+                #         per_day_h = first_out_time - first_in_time
+                #     else:
+                #         per_day_h = day_data.end_time - first_in_time
+                #     data.per_day_hour = per_day_h
+                #     if "day" in str(per_day_h):
+                #         per_day_h = str(per_day_h).split("day, ")[1].split(":")
+                #         per_day_h = timedelta(hours=float(per_day_h[0]), minutes=float(
+                #             per_day_h[1]), seconds=float(per_day_h[2]))
                     
-                    data.per_day_hour = per_day_h
-                    total_per_day_h = total_per_day_h + per_day_h
-                    req_working = day_data.end_time - day_data.start_time
-                    if "day" in str(req_working):
-                        req_working = str(req_working).split("day, ")[1].split(":")
-                        req_working = timedelta(hours=float(req_working[0]), minutes=float(
-                            req_working[1]), seconds=float(req_working[2]))
-                    if half_day_leave:
-                        t = (flt(req_working.total_seconds())/3600)/2
-                        required_working_hrs= required_working_hrs+t
-                    else:
-                        required_working_hrs= required_working_hrs+round(
-                                            flt(req_working.total_seconds())/3600, 2)
-                    half_day_time = day_data.half_day
-                    late_mark = day_data.late_mark
-                    in_diff = first_in_time - day_data.start_time
-                    if not half_day_time:
-                        half_day_time = day_data.late_mark
-                    if "day" in str(in_diff):
-                        in_diff = str(in_diff).split("day, ")[1].split(":")
-                        in_diff = timedelta(hours=float(in_diff[0]), minutes=float(
-                            in_diff[1]), seconds=float(in_diff[2]))
+                #     data.per_day_hour = per_day_h
+                #     total_per_day_h = total_per_day_h + per_day_h
+                #     req_working = day_data.end_time - day_data.start_time
+                #     if "day" in str(req_working):
+                #         req_working = str(req_working).split("day, ")[1].split(":")
+                #         req_working = timedelta(hours=float(req_working[0]), minutes=float(
+                #             req_working[1]), seconds=float(req_working[2]))
+                #     if half_day_leave:
+                #         t = (flt(req_working.total_seconds())/3600)/2
+                #         required_working_hrs= required_working_hrs+t
+                #     else:
+                #         required_working_hrs= required_working_hrs+round(
+                #                             flt(req_working.total_seconds())/3600, 2)
+                #     half_day_time = day_data.half_day
+                #     late_mark = day_data.late_mark
+                #     in_diff = first_in_time - day_data.start_time
+                #     if not half_day_time:
+                #         half_day_time = day_data.late_mark
+                #     if "day" in str(in_diff):
+                #         in_diff = str(in_diff).split("day, ")[1].split(":")
+                #         in_diff = timedelta(hours=float(in_diff[0]), minutes=float(
+                #             in_diff[1]), seconds=float(in_diff[2]))
 
-                    if first_in_time < day_data.start_time:
-                        if first_in_time != timedelta(hours=0):
-                            if day_data.early_overtime_start:
-                                if first_in_time < day_data.early_overtime_start:
-                                    first_in_time = day_data.early_overtime_start
-                                data.early_overtime = day_data.start_time - first_in_time 
-                                total_early_ot = total_early_ot + (day_data.start_time - first_in_time )
-                            first_in_time = day_data.start_time
+                #     if first_in_time < day_data.start_time:
+                #         if first_in_time != timedelta(hours=0):
+                #             if day_data.early_overtime_start:
+                #                 if first_in_time < day_data.early_overtime_start:
+                #                     first_in_time = day_data.early_overtime_start
+                #                 data.early_overtime = day_data.start_time - first_in_time 
+                #                 total_early_ot = total_early_ot + (day_data.start_time - first_in_time )
+                #             first_in_time = day_data.start_time
 
-                    if first_in_time >= late_mark and first_in_time < half_day_time:
-                        data.late = 1
-                        if day_data.calculate_late_hours == "Late Mark":
-                            data.late_coming_hours = first_in_time - late_mark
-                        else:    
-                            data.late_coming_hours = first_in_time - day_data.start_time
-                    else:
-                        data.late = 0
-                    if shift_doc.shift_type == "Night":
-                        if first_in_time > late_mark:
-                            if (first_in_time - late_mark) > timedelta(hours=12,minutes=0,seconds=0):
-                                data.late = 0
-                            else:
-                                data.late = 1
-                        elif first_in_time < late_mark:
-                            if (late_mark - first_in_time) > timedelta(hours=12,minutes=0,seconds=0):
-                                data.late = 1
-                            else:
-                                data.late = 0
+                #     if first_in_time >= late_mark and first_in_time < half_day_time:
+                #         data.late = 1
+                #         if day_data.calculate_late_hours == "Late Mark":
+                #             data.late_coming_hours = first_in_time - late_mark
+                #         else:    
+                #             data.late_coming_hours = first_in_time - day_data.start_time
+                #     else:
+                #         data.late = 0
+                #     if shift_doc.shift_type == "Night":
+                #         if first_in_time > late_mark:
+                #             if (first_in_time - late_mark) > timedelta(hours=12,minutes=0,seconds=0):
+                #                 data.late = 0
+                #             else:
+                #                 data.late = 1
+                #         elif first_in_time < late_mark:
+                #             if (late_mark - first_in_time) > timedelta(hours=12,minutes=0,seconds=0):
+                #                 data.late = 1
+                #             else:
+                #                 data.late = 0
 
                                 
 
-                    if first_in_time >= frappe.db.get_single_value('V HR Settings', 'night_shift_start_time'):
-                        self.no_of_nights += 1
+                #     if first_in_time >= frappe.db.get_single_value('V HR Settings', 'night_shift_start_time'):
+                #         self.no_of_nights += 1
                    
 
-                    if first_in_time >= half_day_time and shift_doc.shift_type != "Night":
-                        data.half_day = 1
-                    else:
-                        data.half_day = 0
+                #     if first_in_time >= half_day_time and shift_doc.shift_type != "Night":
+                #         data.half_day = 1
+                #     else:
+                #         data.half_day = 0
                     
-                    if shift_doc.shift_type == "Night":
-                        if first_in_time > half_day_time:
-                            if (first_in_time - half_day_time) > timedelta(hours=12,minutes=0,seconds=0):
-                                data.half_day = 0
-                            else:
-                                data.late = 0
-                                data.half_day = 1
-                        elif first_in_time < half_day_time:
-                            if (half_day_time - first_in_time) > timedelta(hours=12,minutes=0,seconds=0):
-                                data.half_day = 1
-                                data.late = 0
-                            else:
-                                data.half_day = 0
+                #     if shift_doc.shift_type == "Night":
+                #         if first_in_time > half_day_time:
+                #             if (first_in_time - half_day_time) > timedelta(hours=12,minutes=0,seconds=0):
+                #                 data.half_day = 0
+                #             else:
+                #                 data.late = 0
+                #                 data.half_day = 1
+                #         elif first_in_time < half_day_time:
+                #             if (half_day_time - first_in_time) > timedelta(hours=12,minutes=0,seconds=0):
+                #                 data.half_day = 1
+                #                 data.late = 0
+                #             else:
+                #                 data.half_day = 0
                     
-                    if data.check_out_1:
-                        out_diff = day_data.end_time - first_out_time
-                        if "day" in str(out_diff):
-                            out_diff = str(out_diff).split("day, ")[1].split(":")
-                            out_diff = timedelta(hours=float(out_diff[0]), minutes=float(
-                                out_diff[1]), seconds=float(out_diff[2]))
+                #     if data.check_out_1:
+                #         out_diff = day_data.end_time - first_out_time
+                #         if "day" in str(out_diff):
+                #             out_diff = str(out_diff).split("day, ")[1].split(":")
+                #             out_diff = timedelta(hours=float(out_diff[0]), minutes=float(
+                #                 out_diff[1]), seconds=float(out_diff[2]))
 
-                        if (out_diff.total_seconds()/60) > 00.00 and (out_diff.total_seconds()/60) <= float(day_data.max_early):
-                            if first_out_time < day_data.end_time:
-                                data.early = 1
-                        elif (out_diff.total_seconds()/60) >= float(day_data.max_early) and (out_diff.total_seconds()/60) < float(day_data.max_half_day):
+                #         if (out_diff.total_seconds()/60) > 00.00 and (out_diff.total_seconds()/60) <= float(day_data.max_early):
+                #             if first_out_time < day_data.end_time:
+                #                 data.early = 1
+                #         elif (out_diff.total_seconds()/60) >= float(day_data.max_early) and (out_diff.total_seconds()/60) < float(day_data.max_half_day):
                             
-                            data.half_day = 1
-                            data.early = 0
-                        elif (out_diff.total_seconds()/60) > 720:
-                            tmp  = (out_diff.total_seconds()/60) -720
-                            if tmp >= float(day_data.max_early) and tmp < float(day_data.max_half_day) and (total_time < (day_data.end_time - day_data.start_time)):
-                                data.half_day = 1
-                                data.early = 0 
-                        elif (out_diff.total_seconds()/60) > float(day_data.max_half_day) and data.weekly_off==0 and data.public_holiday == 0:
-                            if first_out_time < day_data.end_time:
-                                data.absent = 1
-                        else:
-                            data.early = 0
+                #             data.half_day = 1
+                #             data.early = 0
+                #         elif (out_diff.total_seconds()/60) > 720:
+                #             tmp  = (out_diff.total_seconds()/60) -720
+                #             if tmp >= float(day_data.max_early) and tmp < float(day_data.max_half_day) and (total_time < (day_data.end_time - day_data.start_time)):
+                #                 data.half_day = 1
+                #                 data.early = 0 
+                #         elif (out_diff.total_seconds()/60) > float(day_data.max_half_day) and data.weekly_off==0 and data.public_holiday == 0:
+                #             if first_out_time < day_data.end_time:
+                #                 data.absent = 1
+                #         else:
+                #             data.early = 0
                        
-                        out_diff = day_data.over_time_start - first_out_time
+                #         out_diff = day_data.over_time_start - first_out_time
                         
-                        if "day" in str(out_diff):
-                            out_diff = str(out_diff).split("day, ")[1].split(":")
-                            out_diff = timedelta(hours=float(out_diff[0]), minutes=float(
-                                out_diff[1]), seconds=float(out_diff[2]))
+                #         if "day" in str(out_diff):
+                #             out_diff = str(out_diff).split("day, ")[1].split(":")
+                #             out_diff = timedelta(hours=float(out_diff[0]), minutes=float(
+                #                 out_diff[1]), seconds=float(out_diff[2]))
                         
-                        ot_start  = day_data.over_time_start if day_data.over_time_start else day_data.end_time
-                        if (out_diff.total_seconds()/60) > 720 and first_out_time < ot_start and shift_doc.shift_type!="Night":
-                            hrs = timedelta(hours=24, minutes=0,
-                                            seconds=0) - out_diff
-                            hrs = hrs
+                #         ot_start  = day_data.over_time_start if day_data.over_time_start else day_data.end_time
+                #         if (out_diff.total_seconds()/60) > 720 and first_out_time < ot_start and shift_doc.shift_type!="Night":
+                #             hrs = timedelta(hours=24, minutes=0,
+                #                             seconds=0) - out_diff
+                #             hrs = hrs
                            
-                            data.late_sitting = hrs
-                        if (out_diff.total_seconds()/60) > 720 and first_out_time > ot_start and shift_doc.shift_type!="Night":
-                            hrs = timedelta(hours=24, minutes=0,
-                                            seconds=0) - out_diff
+                #             data.late_sitting = hrs
+                #         if (out_diff.total_seconds()/60) > 720 and first_out_time > ot_start and shift_doc.shift_type!="Night":
+                #             hrs = timedelta(hours=24, minutes=0,
+                #                             seconds=0) - out_diff
                            
-                            hrs = hrs
-                            data.late_sitting = hrs
-                        if first_out_time > ot_start and shift_doc.shift_type == "Night":
-                            hrs = timedelta(hours=24, minutes=0,
-                                            seconds=0) - out_diff
-                            hrs = hrs
-                            data.late_sitting = hrs
-                        if data.absent == 1 or not data.check_out_1:
-                            data.late_sitting = None
-                        #setting required
-                        if data.late_sitting:
-                            new_late_sitting = data.late_sitting
-                            if data.late_sitting >= timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0):
-                                new_late_sitting = timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0) + timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0)
-                            if data.late_sitting >= timedelta(hours=hr_settings.threshold_for_additional_hours,minutes=0,seconds=0):
-                                    data.additional_hours  =  data.late_sitting - timedelta(hours=hr_settings.threshold_for_additional_hours,minutes=0,seconds=0)
-                                    total_additional_hours = total_additional_hours + data.additional_hours
-                            data.late_sitting = new_late_sitting
+                #             hrs = hrs
+                #             data.late_sitting = hrs
+                #         if first_out_time > ot_start and shift_doc.shift_type == "Night":
+                #             hrs = timedelta(hours=24, minutes=0,
+                #                             seconds=0) - out_diff
+                #             hrs = hrs
+                #             data.late_sitting = hrs
+                #         if data.absent == 1 or not data.check_out_1:
+                #             data.late_sitting = None
+                #         #setting required
+                #         if data.late_sitting:
+                #             new_late_sitting = data.late_sitting
+                #             if data.late_sitting >= timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0):
+                #                 new_late_sitting = timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0) + timedelta(hours=hr_settings.double_overtime_after,minutes=0,seconds=0)
+                #             if data.late_sitting >= timedelta(hours=hr_settings.threshold_for_additional_hours,minutes=0,seconds=0):
+                #                     data.additional_hours  =  data.late_sitting - timedelta(hours=hr_settings.threshold_for_additional_hours,minutes=0,seconds=0)
+                #                     total_additional_hours = total_additional_hours + data.additional_hours
+                #             data.late_sitting = new_late_sitting
 
-                        if first_out_time >= timedelta(hours=get_time(hr_settings.night_shift_start_time).hour,minutes=get_time(hr_settings.night_shift_start_time).minute) and holiday_flag:
-                            data.holiday_night = 1
-                            self.no_of_holiday_night+=1
+                #         if first_out_time >= timedelta(hours=get_time(hr_settings.night_shift_start_time).hour,minutes=get_time(hr_settings.night_shift_start_time).minute) and holiday_flag:
+                #             data.holiday_night = 1
+                #             self.no_of_holiday_night+=1
 
-                else:
-                    if data.weekly_off==0 and data.public_holiday == 0:
-                        data.absent = 1 
-                        data.late = 0
-                        data.half_day = 0
-                        data.early = 0
+                # else:
+                #     if data.weekly_off==0 and data.public_holiday == 0:
+                #         data.absent = 1 
+                #         data.late = 0
+                #         data.half_day = 0
+                #         data.early = 0
 
                 if total_time:
                     total_time_hours = total_time.total_seconds()/3600

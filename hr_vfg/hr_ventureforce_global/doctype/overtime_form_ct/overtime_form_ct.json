@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-07-01 14:43:56.004549",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "designation",
+  "actual_overtime",
+  "approved_overtime",
+  "reason",
+  "att_ref",
+  "att_child_ref"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "actual_overtime",
+   "fieldtype": "Data",
+   "label": "Actual Overtime"
+  },
+  {
+   "fieldname": "approved_overtime",
+   "fieldtype": "Time",
+   "label": "Approved Overtime"
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Data",
+   "label": "Reason"
+  },
+  {
+   "fieldname": "att_ref",
+   "fieldtype": "Data",
+   "label": "Att Ref"
+  },
+  {
+   "fieldname": "att_child_ref",
+   "fieldtype": "Data",
+   "label": "Att Child Ref"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-07-01 14:45:17.664426",
+ "modified_by": "Administrator",
+ "module": "HR VentureForce Global",
+ "name": "Overtime Form CT",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}
