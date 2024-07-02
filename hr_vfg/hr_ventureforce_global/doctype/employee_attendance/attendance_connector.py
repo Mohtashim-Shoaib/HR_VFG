@@ -14,6 +14,7 @@ from requests import request
 import json
 from datetime import datetime
 from datetime import timedelta
+from hr_vfg.hr_ventureforce_global.doctype.employee_attendance.attendance_connector import base
 
 
 @frappe.whitelist()
