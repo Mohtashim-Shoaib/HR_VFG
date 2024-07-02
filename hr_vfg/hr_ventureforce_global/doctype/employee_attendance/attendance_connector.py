@@ -4,7 +4,7 @@ from frappe import utils
 from frappe import throw, _
 import sys
 import time
-from zk import ZK, const
+from zk import ZK, const, base
 from datetime import datetime, timedelta
 from frappe.utils import date_diff, add_months, get_datetime, today, getdate, add_days, flt, get_last_day
 import calendar
@@ -14,7 +14,7 @@ from requests import request
 import json
 from datetime import datetime
 from datetime import timedelta
-from hr_vfg.hr_ventureforce_global.doctype.employee_attendance.attendance_connector import base
+# from hr_vfg.hr_ventureforce_global.doctype.employee_attendance.attendance_connector import base
 
 
 @frappe.whitelist()
