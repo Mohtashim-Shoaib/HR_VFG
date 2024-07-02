@@ -15,7 +15,6 @@ from frappe.utils import cstr, flt
 
 
 class EmployeeAttendance(Document):
-    # pass
     def autoname(self):
         self.name = make_autoname(self.employee + '-' + self.month)
 
@@ -330,10 +329,10 @@ class EmployeeAttendance(Document):
                             out_diff = timedelta(hours=float(out_diff[0]), minutes=float(
                                 out_diff[1]), seconds=float(out_diff[2]))
 
-                        # frappe.msgprint(day_data.max_early)
-                        # frappe.msgprint(str((out_diff.total_seconds()/60)))
-                        # self.table1[ii].check_out_9 = out_diff.total_seconds()/60
-                        # self.table1[ii].check_out_10 = day_data.max_early
+                        frappe.msgprint(day_data.max_early)
+                        frappe.msgprint(str((out_diff.total_seconds()/60)))
+                        self.table1[ii].check_out_9 = out_diff.total_seconds()/60
+                        self.table1[ii].check_out_10 = day_data.max_early
                         if (out_diff.total_seconds()/60) > 15.00 and (out_diff.total_seconds()/60) <= float(day_data.max_early):
 
                             self.table1[ii].early = 1
@@ -414,4 +413,5 @@ class EmployeeAttendance(Document):
         else:
             #self.over_time = 0
             self.short_hours = self.difference
-            self.total_working_hours = required_working_hrs
+
+        self.total_working_hours = required_working_hrs

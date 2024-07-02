@@ -16,13 +16,14 @@ from datetime import datetime
 from datetime import timedelta
 
 
+
 @frappe.whitelist()
 def get_attendance_long(**args):
 	if not args:
 		args = frappe.local.form_dict
 	"Enqueue longjob for taking backup to dropbox"
 	#enqueue("erpnext.hr.doctype.attendance.att_week.get_attendance_in_test", queue='long', timeout=1500)
-	enqueue("erpnext.hr.doctype.attendance.att_week.get_attendance_in_test2", queue='long', timeout=5000,args=args)
+	#enqueue("erpnext.hr.doctype.attendance.att_week.get_attendance_in_test2", queue='long', timeout=5000,args=args)
 	# enqueue("erpnext.hr.doctype.attendance.att_week.get_attendance_in_test3", queue='long', timeout=5000,args=args)
 	# enqueue("erpnext.hr.doctype.attendance.att_week.get_attendance_in_test4", queue='long', timeout=5000,args=args)
 
@@ -31,7 +32,7 @@ def get_attendance_long(**args):
 @frappe.whitelist()
 def settle_night_s():
 	"Enqueue longjob for taking backup to dropbox"
-	enqueue("erpnext.hr.doctype.attendance.att_week.settle_night_shift", queue='long', timeout=3000)
+	#enqueue("erpnext.hr.doctype.attendance.att_week.settle_night_shift", queue='long', timeout=3000)
 	frappe.msgprint(_("Queued for night shift settlment."))
 def get_attendance_in():
 	conn = None
@@ -950,5 +951,3 @@ def email_report():
 		})
 		auto_email_report.save()
 		send_now("Daily Attendance")
-
-	
