@@ -4,7 +4,9 @@
 import frappe
 from frappe.model.document import Document
 
-class EmployeeShiftTransfer(Document):	
+class EmployeeShiftTransfer(Document):
+	# pass
+	# pass	
 	def on_submit(self):
 		self.create_shift_transfers()
 	def create_shift_transfers(self):

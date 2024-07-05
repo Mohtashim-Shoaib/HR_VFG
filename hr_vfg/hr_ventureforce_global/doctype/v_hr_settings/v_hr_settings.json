@@ -13,9 +13,11 @@
   "maximum_lates_for_halfday",
   "maximum_early_for_halfday",
   "holiday_full_day_ot",
+  "working_day_fullday_overtime",
   "column_break_2",
   "double_overtime_after",
   "threshold_for_additional_hours",
+  "working_day_halfday_overtime",
   "section_break_6",
   "auto_fetch_check_in",
   "8_column",
@@ -251,13 +253,25 @@
    "fieldname": "maximum_early_for_halfday",
    "fieldtype": "Int",
    "label": "Maximum Early For Halfday"
+  },
+  {
+   "fieldname": "working_day_halfday_overtime",
+   "fieldtype": "Float",
+   "label": "Working Day Halfday Overtime",
+   "precision": "2"
+  },
+  {
+   "fieldname": "working_day_fullday_overtime",
+   "fieldtype": "Float",
+   "label": "Working Day Fullday Overtime",
+   "precision": "2"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-06-26 16:43:55.452905",
+ "modified": "2024-07-05 19:27:09.306280",
  "modified_by": "Administrator",
  "module": "HR VentureForce Global",
  "name": "V HR Settings",
@@ -275,5 +289,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }

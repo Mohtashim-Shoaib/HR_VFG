@@ -329,10 +329,10 @@ class EmployeeAttendance(Document):
                             out_diff = timedelta(hours=float(out_diff[0]), minutes=float(
                                 out_diff[1]), seconds=float(out_diff[2]))
 
-                        frappe.msgprint(day_data.max_early)
-                        frappe.msgprint(str((out_diff.total_seconds()/60)))
-                        self.table1[ii].check_out_9 = out_diff.total_seconds()/60
-                        self.table1[ii].check_out_10 = day_data.max_early
+                        # frappe.msgprint(day_data.max_early)
+                        # frappe.msgprint(str((out_diff.total_seconds()/60)))
+                        # self.table1[ii].check_out_9 = out_diff.total_seconds()/60
+                        # self.table1[ii].check_out_10 = day_data.max_early
                         if (out_diff.total_seconds()/60) > 15.00 and (out_diff.total_seconds()/60) <= float(day_data.max_early):
 
                             self.table1[ii].early = 1

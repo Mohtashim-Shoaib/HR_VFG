@@ -16,17 +16,16 @@ import time
 from frappe.utils import cstr, flt,getdate, today, get_time
 import calendar
 
-
 # from erpnext.setup.doctype.employee.employee import (
 #     get_holidays_for_employee,
 #     InactiveEmployeeStatusError
 # )
-from erpnext.setup.doctype.employee.employee import get_holiday_list_for_employee
+# from erpnext.setup.doctype.employee.employee import get_holiday_list_for_employee
 
-# from erpnext.hr.doctype.employee.employee import (
-# 	InactiveEmployeeStatusError,
-# 	get_holiday_list_for_employee,
-# )
+from erpnext.setup.doctype.employee.employee import (
+	InactiveEmployeeStatusError,
+	get_holiday_list_for_employee,
+)
 
 # from erpnext.hr.doctype.employee.employee import (
 # 	InactiveEmployeeStatusError,
@@ -171,9 +170,9 @@ class EmployeeAttendance(Document):
                 if str(data.check_out_1) == str(hr_settings.auto_fetch_check_out):
                     data.check_out_1 = None
                 
-                if data.check_in_1 != None and data.check_out_1 == None and data.date < today():
-                    data.check_out_1 = timedelta(hours=int(str(data.check_in_1).split(":")[0]),
-                                              minutes=int(str(data.check_in_1).split(":")[1])+1)
+                # if data.check_in_1 != None and data.check_out_1 == None and data.date < today():
+                #     data.check_out_1 = timedelta(hours=int(str(data.check_in_1).split(":")[0]),
+                #                               minutes=int(str(data.check_in_1).split(":")[1])+1)
                   
                 if data.approved_ot1:
                     total_approved_ot+= timedelta(hours=int(str(data.approved_ot1).split(":")[0]),minutes=int(str(data.approved_ot1).split(":")[1]))
@@ -459,8 +458,8 @@ class EmployeeAttendance(Document):
                     total_early += 1
                 if data.late:
                     total_lates += 1
-                    if data.late_coming_hours:
-                        total_late_coming_hours = total_late_coming_hours + data.late_coming_hours
+                    # if data.late_coming_hours:
+                    #     total_late_coming_hours = total_late_coming_hours + data.late_coming_hours
                 if data.half_day:
                     total_half_days += 1
               
@@ -675,10 +674,10 @@ class EmployeeAttendance(Document):
         self.extra_ot_amount = extra_ot_amount
         self.total_lates = total_lates
         self.total_early_goings = total_early
-        # self.total_half_days = total_half_days
+        self.total_half_days = total_half_days
         self.total_early_going_hours = total_early_going_hrs
         self.holiday_hour = round(flt(total_holiday_hours.total_seconds())/3600, 2)
-        # self.early_over_time = round(flt(total_early_ot.total_seconds())/3600, 2)
+        self.early_over_time = round(flt(total_early_ot.total_seconds())/3600, 2)
         t_lat = 0
         t_earl = 0
         if hr_settings.maximum_lates_for_absent > 0:

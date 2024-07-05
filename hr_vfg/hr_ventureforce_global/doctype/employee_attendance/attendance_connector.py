@@ -14,7 +14,6 @@ from requests import request
 import json
 from datetime import datetime
 from datetime import timedelta
-# from hr_vfg.hr_ventureforce_global.doctype.employee_attendance.attendance_connector import base
 
 
 @frappe.whitelist()
@@ -157,6 +156,31 @@ def get_checkins(args=None, ip=None, port=None,password=0):
 		if conn:
 			conn.disconnect()
 
+def check_time(attend1):
+	t_biometric = str(attend1).split()[1]
+	flg = False
+	t_date = str(attend1).split()[3]
+	employee = frappe.db.get_value("Employee",{"biometric_id":t_biometric},"name")
+	shift_ass = frappe.get_all("Shift Assignment", filters={'employee': employee,
+													'start_date': ["<=", getdate(t_date)],'end_date': [">=", getdate(t_date)]}, fields=["*"])
+	if len(shift_ass) > 0:
+		shift = shift_ass[0].shift_type
+	else:
+		shift_ass = frappe.get_all("Shift Assignment", filters={'employee': employee,
+															'start_date': ["<=", getdate(t_date)]}, fields=["*"])
+	if len(shift_ass) > 0:
+			shift = shift_ass[0].shift_type
+			shift_doc = frappe.get_doc("Shift Type", shift)
+			s_type = shift_doc.shift_type
+			t_check_out = str(attend1).split()[4]
+			t_check_out_f_f = timedelta(hours=int(t_check_out.split(":")[0]),minutes=int(t_check_out.split(":")[1]))
+			shift_start_t = timedelta(hours=int(str(shift_doc.start_time).split(":")[0]),minutes=int(str(shift_doc.start_time).split(":")[1]))
+			if t_check_out_f_f < shift_start_t:
+				prev_date = add_days(getdate(t_date),-1)
+				return True, prev_date
+			return True, False
+
+	return False, False
 def get_checkouts(args=None,ip=None, port=None,password=0):
 	conn = None
 	emp_list = [] #110.93.236.48
@@ -165,7 +189,7 @@ def get_checkouts(args=None,ip=None, port=None,password=0):
 	if not password:
 		password = 0
 	zk = ZK(ip, port=int(port), timeout=1500, password=password, force_udp=False, ommit_ping=False)
-	frappe.log_error("Starting out..","Attendance hook test")
+	frappe.log_error("Starting out now","Attendance hook test")
 	try:
 		conn = zk.connect()
 		if conn:
@@ -212,26 +236,9 @@ def get_checkouts(args=None,ip=None, port=None,password=0):
 							continue
 					if attendance_dict.get(str(attend1).split()[1]):
 						if attendance_dict.get(str(attend1).split()[1]).get(str(attend1).split()[3]):
-							t_biometric = str(attend1).split()[1]
-							flg = False
-							t_date = str(attend1).split()[3]
-							employee = frappe.db.get_value("Employee",{"biometric_id":t_biometric},"name")
-							shift_ass = frappe.get_all("Shift Assignment", filters={'employee': employee,
-                                                                            'start_date': ["<=", getdate(t_date)],'end_date': [">=", getdate(t_date)]}, fields=["*"])
-							if len(shift_ass) > 0:
-								shift = shift_ass[0].shift_type
-							else:
-								shift_ass = frappe.get_all("Shift Assignment", filters={'employee': employee,
-																					'start_date': ["<=", getdate(t_date)]}, fields=["*"])
-							if len(shift_ass) > 0:
-									shift = shift_ass[0].shift_type
-									shift_doc = frappe.get_doc("Shift Type", shift)
-									s_type = shift_doc.shift_type
-									t_check_out = str(attend1).split()[4]
-									t_check_out_f_f = timedelta(hours=int(t_check_out.split(":")[0]),minutes=int(t_check_out.split(":")[1]))
-									shift_start_t = timedelta(hours=int(str(shift_doc.start_time).split(":")[0]),minutes=int(str(shift_doc.start_time).split(":")[1]))
-									if t_check_out_f_f < shift_start_t:
-										prev_date = add_days(getdate(t_date),-1)
+							shift, prev_date = check_time(attend1)
+							if shift:
+									if prev_date:
 										if attendance_dict.get(str(attend1).split()[1]).get(str(prev_date)):
 											attendance_dict.get(str(attend1).split()[1]).get(str(prev_date))["check out"]=str(attend1).split()[4]
 											attendance_dict.get(str(attend1).split()[1]).get(str(prev_date))["checkout string"]=str(attend1)
@@ -253,17 +260,34 @@ def get_checkouts(args=None,ip=None, port=None,password=0):
 								attendance_dict.get(str(attend1).split()[1]).get(str(attend1).split()[3])["checkout string"]=str(attend1)
 							print("done")
 						else:
-							attendance_dict.get(str(attend1).split()[1])[str(attend1).split()[3]]={
-								"check out": str(attend1).split()[4],
-								"checkout string":str(attend1)
-							}
+							shift, prev_date = check_time(attend1)
+							if prev_date:
+								attendance_dict.get(str(attend1).split()[1])[str(prev_date)]={
+									"check out": str(attend1).split()[4],
+									"checkout string":str(attend1)
+								}
+							else:
+								attendance_dict.get(str(attend1).split()[1])[str(attend1).split()[3]]={
+									"check out": str(attend1).split()[4],
+									"checkout string":str(attend1)
+								}
 					else:
-						attendance_dict[str(attend1).split()[1]]={
-							str(attend1).split()[3] :{
-								"check out": str(attend1).split()[4],
-								"checkout string":str(attend1)
+						
+						shift, prev_date = check_time(attend1)
+						if prev_date:
+							attendance_dict[str(attend1).split()[1]]={
+								str(prev_date) :{
+									"check out": str(attend1).split()[4],
+									"checkout string":str(attend1)
+								}
 							}
-						}
+						else:
+							attendance_dict[str(attend1).split()[1]]={
+								str(attend1).split()[3] :{
+									"check out": str(attend1).split()[4],
+									"checkout string":str(attend1)
+								}
+							}
 					
 					
 
@@ -318,7 +342,7 @@ def get_checkouts(args=None,ip=None, port=None,password=0):
 				
 				
 	except Exception as e:
-		print ("Process terminate : {}"+frappe.get_traceback())
+		frappe.log_error ("Process terminate : {}"+frappe.get_traceback())
 	finally:
 		if conn:
 			conn.disconnect()
@@ -597,3 +621,5 @@ def email_report():
 		})
 		auto_email_report.save()
 		send_now("Daily Attendance")
+
+	

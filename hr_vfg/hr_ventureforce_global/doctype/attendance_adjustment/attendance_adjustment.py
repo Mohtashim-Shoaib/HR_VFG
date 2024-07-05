@@ -16,31 +16,34 @@ from frappe.model.document import Document
 
 
 class AttendanceAdjustment(Document):
-	# pass
 	def validate(self):
-		if self.date:
-			if getdate(self.date) < add_days(getdate(),-6):
-				frappe.throw("Six days older adjustment are not allowed.")
-		if self.type != "Short Leave":
-			return True
+		# if self.date:
+		# 	if getdate(self.date) < add_days(getdate(),-6):
+		# 		frappe.throw("Six days older adjustment are not allowed.")
+		# if self.type != "Short Leave":
+		# 	return True
+		hr_settings = frappe.get_single('V HR Settings')
 		for data in self.table_4:
-			att = frappe.db.sql(""" select p.name, c.check_in_1, c.check_out_1 from `tabEmployee Attendance` p 
+			att = frappe.db.sql(""" select p.name, c.check_in_1, c.check_out_1, late, half_day from `tabEmployee Attendance` p 
 			JOIN `tabEmployee Attendance Table` c
 					ON c.parent = p.name where c.date=%s and p.month=%s and p.employee=%s""",
 					(self.date,self.month,data.employee_id), as_dict=1)
 			att_hrs = 0
 			adjust_hrs = 0
 			flg = False
-			
-			
 			if len(att) > 0:
+				if self.type == "Short Leave":
+					if att[0]["late"] == 1 and hr_settings.short_leave_apply_on_late == 0:
+						frappe.throw(f"Row {data.idx} You cannot apply for short leave on late. Please enable settings.")
+					if att[0]["half_day"] == 1 and hr_settings.short_leave_apply_on_halfday == 0:
+						frappe.throw(f"Row {data.idx} You cannot apply for short leave on half day. Please enable settings.")
 				
 				if att[0]['check_in_1'] and att[0]['check_out_1']:
 					
 					x = datetime.strptime(
-							str(att[0]['check_in_1']), '%H:%M:%S').time()
+							str(att[0]['check_in_1']).split(".")[0], '%H:%M:%S').time()
 					y = datetime.strptime(
-						str(att[0]['check_out_1']), '%H:%M:%S').time()
+						str(att[0]['check_out_1']).split(".")[0], '%H:%M:%S').time()
 					xh, xm, xs = str(x).split(":")
 					yh, ym, ys = str(y).split(":")
 				
@@ -87,8 +90,6 @@ class AttendanceAdjustment(Document):
 						data.no_of_hours = 3
 					# elif time_diff > 3 and time_diff <=6:
 					# 	data.no_of_hours = 6
-					else:
-						frappe.throw("Limit Exceded {0}.".format(str(time_diff)))
 					flg = True
 					
 
@@ -118,8 +119,6 @@ class AttendanceAdjustment(Document):
 						data.no_of_hours = 3
 					# elif att_hrs > 3 and att_hrs <=6:
 					# 	data.no_of_hours = 6
-					else:
-						frappe.throw("Adjustment Limit Exceded (2).")
 					flg = True
 
 
@@ -149,8 +148,6 @@ class AttendanceAdjustment(Document):
 						data.no_of_hours = 3
 					# elif att_hrs > 2 and att_hrs <=4:
 					# 	data.no_of_hours = 4
-					else:
-						frappe.throw("Adjustment Limit Exceded (3).")
 					flg = True
 
 				
@@ -177,17 +174,11 @@ class AttendanceAdjustment(Document):
 				adjust_hrs = round(
 						flt((diff).total_seconds())/3600, 2)
 				
-				if adjust_hrs > 0 and adjust_hrs <=2:
-					data.no_of_hours = 2
-				elif adjust_hrs > 2 and adjust_hrs <=4:
-					data.no_of_hours = 4
-				else:
-					frappe.throw("Adjustment Limit Exceded {0}.".format(str(adjust_hrs)))
 				
 
 			existing_hrs = frappe.db.sql(""" select sum(c.no_of_hours) as hrs
 					   from `tabAttendance Adjustment` p JOIN `tabAttendance Adjustment CT` c
-					   ON c.parent = p.name where p.month=%s and c.employee_id=%s and c.name!=%s and p.docstatus=1""",(self.month,data.employee_id,data.name),as_dict=1)
+					   ON c.parent = p.name where p.type=%s and p.month=%s and c.employee_id=%s and c.name!=%s and p.docstatus=1""",(self.type,self.month,data.employee_id,data.name),as_dict=1)
 			exst_hrs = 0.0
 			
 			
@@ -195,8 +186,33 @@ class AttendanceAdjustment(Document):
 				data.no_of_hours = 0.0
 			if len(existing_hrs) > 0:
 				exst_hrs = float(existing_hrs[0]['hrs'] or 0)
-			if (float(data.no_of_hours) + exst_hrs) > 6:
-				frappe.throw("Adjustment Limit Exceded. Availed hours = {0} and new hours request = {1}".format(str(exst_hrs),str(data.no_of_hours)))
+			if self.type == "Short Leave":
+				existing_shl = frappe.db.sql(""" select count(*) as num
+					   from `tabAttendance Adjustment` p JOIN `tabAttendance Adjustment CT` c
+					   ON c.parent = p.name where p.type=%s and p.month=%s and c.employee_id=%s and c.name!=%s and p.docstatus=1""",(self.type,self.month,data.employee_id,data.name),as_dict=1)
+
+	@frappe.whitelist()
+	def get_data(self):
+		rec = frappe.db.sql(""" select p.employee,p.employee_name, p.designation, 
+					  c.check_in_1,c.check_out_1, c.name as child_name, p.name as parent_name from `tabEmployee Attendance` p
+					  LEFT JOIN `tabEmployee Attendance Table` c ON c.parent=p.name
+					  where p.month=%s and p.year=%s and c.date=%s """,
+					  (self.month,getdate(self.date).year,self.date),as_dict=1)
+		
+		if len(rec) > 0:
+			self.table_4 = []
+		for r in rec:
+			
+			self.append("table_4",{
+				"employee_id":r.employee,
+				"check_in_1":r.check_in_1 or "00:00:00",
+				"employee_name":r.employee_name,
+				"check_out_1":r.check_out_1 or "00:00:00",
+				"check_in":"00:00:00",
+				"check_out":"00:00:00"
+				
+			})
+		self.save()
 	
 	@frappe.whitelist()
 	def create_logs(self):
@@ -210,7 +226,7 @@ class AttendanceAdjustment(Document):
 					doc1.attendance_time= data.check_in
 					doc1.type = "Check In"
 					doc1.save(ignore_permissions=True)
-					doc1.get_employee_attendance()
+					doc1.get_employee_attendance(force_update=True)
 				att = frappe.db.sql(""" select p.name from `tabEmployee Attendance` p JOIN `tabEmployee Attendance Table` c
 				ON c.parent = p.name where c.date=%s and p.month=%s and p.employee=%s """,(self.date,self.month,data.employee_id), as_dict=1)
 				if len(att) > 0:
@@ -225,7 +241,7 @@ class AttendanceAdjustment(Document):
 					doc1.attendance_time= data.check_out
 					doc1.type = "Check Out"
 					doc1.save(ignore_permissions=True)
-					doc1.get_employee_attendance()
+					doc1.get_employee_attendance(force_update=True)
 				att = frappe.db.sql(""" select p.name from `tabEmployee Attendance` p JOIN `tabEmployee Attendance Table` c
 				ON c.parent = p.name where c.date=%s and p.month=%s and p.employee=%s """,(self.date,self.month,data.employee_id), as_dict=1)
 				if len(att) > 0:

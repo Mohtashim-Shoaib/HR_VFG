@@ -19,13 +19,11 @@ from datetime import timedelta
 import datetime
 import time
 
-class AttendanceLogs(Document):
-# class AttendanceLogs(TransactionBase):
-	# pass
+class AttendanceLogs(TransactionBase):
 	def validate(self):
 		self.get_employee_attendance()
 
-	def get_employee_attendance(self):
+	def get_employee_attendance(self,force_update=False):
 		mon = ["January", "February", "March", "April", "May", "June", "July", 
 		"August", "September", "October", "November", "December"]
 		att_det = str(self.attendance).split()
@@ -67,6 +65,9 @@ class AttendanceLogs(Document):
 				if self.type == "Check In":
 					doc = frappe.get_doc("Employee Attendance", res[0][0])
 					for x_ in range(len(doc.table1)):
+						
+						if doc.table1[x_].get("type") != None and doc.table1[x_].get("type") != "" and force_update==False:
+							continue
 						if str(doc.table1[x_].date) == self.attendance_date:
 							doc.table1[x_].ip = self.ip
 							doc.table1[x_].check_in_1 = self.attendance_time
@@ -77,6 +78,8 @@ class AttendanceLogs(Document):
 				elif self.type == "Check Out":
 					doc = frappe.get_doc("Employee Attendance", res[0][0])
 					for x_ in range(len(doc.table1)):
+						if doc.table1[x_].get("type") != None and doc.table1[x_].get("type") != "" and force_update==False:
+							continue
 						if str(doc.table1[x_].date) == self.attendance_date:
 							doc.table1[x_].ip = self.ip
 							doc.table1[x_].check_out_1 = self.attendance_time
@@ -126,4 +129,24 @@ class AttendanceLogs(Document):
 						pi.check_in_1 = hr_settings.auto_fetch_check_in
 						pi.check_out_1 = hr_settings.auto_fetch_check_out
 					da = da + timedelta(days=1)
-				doc.save(ignore_permissions=True)			
+				doc.save(ignore_permissions=True)
+
+
+
+@frappe.whitelist()
+def sync_attendance(**args):
+	condition = """
+		where attendance_date between '{0}' and '{1}'
+	""".format(args.get("from_date"),args.get("to_date"))
+	if args.get("employee"):
+		condition+=" and biometric_id='{0}' ".format(frappe.db.get_value("Employee",{"name":args.get("employee")},"biometric_id"))
+	elif args.get("department"):
+		rec = frappe.db.get_all("Employee",filters = {"department":args.get("department")},fields=["biometric_id"])
+		condition += " and biometric_id in {0}".format(tuple([r.biometric_id for r in rec]))
+	data = frappe.db.sql("""select name from `tabAttendance Logs` {condition} """.format(condition=condition),as_dict=1)
+	
+	for item in data:
+		try:
+			frappe.get_doc("Attendance Logs",item.name).get_employee_attendance()
+		except:
+			frappe.log_error(frappe.get_traceback() ,"Attendance Sync")
